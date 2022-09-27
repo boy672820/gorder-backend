@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId    BigInt    @id @unique(map: "userId_UNIQUE") @default(autoincrement()) @db.UnsignedBigInt
+  realname  String    @db.VarChar(45)
+  createdAt DateTime  @default(now()) @db.DateTime(0)
+  updatedAt DateTime  @db.DateTime(0)
+  History   History[]
+  Order     Order[]
+}
+
+model History {
+  historyId   BigInt      @unique(map: "historyId_UNIQUE") @default(autoincrement()) @db.UnsignedBigInt
+  userId      BigInt      @db.UnsignedBigInt
+  historyType String      @db.VarChar(20)
+  amount      Int         @db.UnsignedInt
+  storeName   String      @db.VarChar(45)
+  productName String      @db.VarChar(45)
+  basePrice   Int         @db.UnsignedInt
+  discount    Int         @db.UnsignedTinyInt
+  createdAt   DateTime    @default(now()) @db.DateTime(0)
+  HistoryType HistoryType @relation(fields: [historyType], references: [historyType], onDelete: NoAction, onUpdate: NoAction, map: "fk_History_HistoryType1")
+  User        User        @relation(fields: [userId], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_User_has_Product_User")
+
+  @@id([historyId, userId, historyType])
+  @@index([historyType], map: "fk_History_HistoryType1_idx")
+  @@index([userId], map: "fk_User_has_Product_User_idx")
+}
+
+model HistoryType {
+  historyType String    @id @unique(map: "name_UNIQUE") @db.VarChar(20)
+  History     History[]
+}
+
+model Order {
+  orderId           BigInt    @unique(map: "orderId_UNIQUE") @default(autoincrement()) @db.UnsignedBigInt
+  User_userId       BigInt    @db.UnsignedBigInt
+  Product_productId BigInt    @db.UnsignedBigInt
+  amount            Int       @db.UnsignedInt
+  orderType         String    @db.VarChar(20)
+  createdAt         DateTime  @default(now()) @db.DateTime(0)
+  Product           Product   @relation(fields: [Product_productId], references: [productId], onDelete: NoAction, onUpdate: NoAction, map: "fk_User_has_Product_Product2")
+  User              User      @relation(fields: [User_userId], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_User_has_Product_User1")
+  OrderType         OrderType @relation(fields: [orderType], references: [orderType], onDelete: NoAction, onUpdate: NoAction, map: "fk_Order_OrderType1")
+
+  @@id([orderId, User_userId, Product_productId, orderType])
+  @@index([orderType], map: "fk_Order_OrderType1_idx")
+  @@index([Product_productId], map: "fk_User_has_Product_Product2_idx")
+  @@index([User_userId], map: "fk_User_has_Product_User1_idx")
+}
+
+model OrderType {
+  orderType String  @id @unique(map: "orderType_UNIQUE") @db.VarChar(20)
+  Order     Order[]
+}
+
+model Product {
+  productId  BigInt   @unique(map: "productId_UNIQUE") @default(autoincrement()) @db.UnsignedBigInt
+  storeId    Int      @db.UnsignedInt
+  name       String   @db.VarChar(45)
+  basePrice  Int      @db.UnsignedInt
+  discount   Int      @default(0) @db.UnsignedTinyInt
+  totalPrice Int      @db.UnsignedInt
+  createdAt  DateTime @default(now()) @db.DateTime(0)
+  updatedAt  DateTime @db.DateTime(0)
+  Store      Store    @relation(fields: [storeId], references: [storeId], onDelete: NoAction, onUpdate: NoAction, map: "fk_Product_Store1")
+  Order      Order[]
+
+  @@id([productId, storeId])
+  @@index([storeId], map: "fk_Product_Store1_idx")
+}
+
+model Store {
+  storeId   Int       @id @unique(map: "storeId_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  name      String    @unique(map: "name_UNIQUE") @db.VarChar(45)
+  createdAt DateTime  @default(now()) @db.DateTime(0)
+  updatedAt DateTime  @db.DateTime(0)
+  Product   Product[]
+}
