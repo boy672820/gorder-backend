@@ -27,7 +27,7 @@ model History {
   discount    Int         @db.UnsignedTinyInt
   createdAt   DateTime    @default(now()) @db.DateTime(0)
   HistoryType HistoryType @relation(fields: [historyType], references: [historyType], onDelete: NoAction, onUpdate: NoAction, map: "fk_History_HistoryType1")
-  User        User        @relation(fields: [userId], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_User_has_Product_User")
+  User        User        @relation(fields: [userId], references: [userId], onDelete: Cascade, map: "fk_User_has_Product_User")
 
   @@id([historyId, userId, historyType])
   @@index([historyType], map: "fk_History_HistoryType1_idx")
@@ -40,20 +40,23 @@ model HistoryType {
 }
 
 model Order {
-  orderId           BigInt    @unique(map: "orderId_UNIQUE") @default(autoincrement()) @db.UnsignedBigInt
-  User_userId       BigInt    @db.UnsignedBigInt
-  Product_productId BigInt    @db.UnsignedBigInt
-  amount            Int       @db.UnsignedInt
-  orderType         String    @db.VarChar(20)
-  createdAt         DateTime  @default(now()) @db.DateTime(0)
-  Product           Product   @relation(fields: [Product_productId], references: [productId], onDelete: NoAction, onUpdate: NoAction, map: "fk_User_has_Product_Product2")
-  User              User      @relation(fields: [User_userId], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_User_has_Product_User1")
-  OrderType         OrderType @relation(fields: [orderType], references: [orderType], onDelete: NoAction, onUpdate: NoAction, map: "fk_Order_OrderType1")
+  orderId     BigInt      @unique(map: "orderId_UNIQUE") @default(autoincrement()) @db.UnsignedBigInt
+  userId      BigInt      @db.UnsignedBigInt
+  productId   BigInt      @db.UnsignedBigInt
+  amount      Int         @db.UnsignedInt
+  orderType   String      @db.VarChar(20)
+  orderStatus String      @db.VarChar(20)
+  createdAt   DateTime    @default(now()) @db.DateTime(0)
+  OrderStatus OrderStatus @relation(fields: [orderStatus], references: [orderStatus], map: "fk_Order_OrderStatus1")
+  OrderType   OrderType   @relation(fields: [orderType], references: [orderType], map: "fk_Order_OrderType1")
+  Product     Product     @relation(fields: [productId], references: [productId], map: "fk_User_has_Product_Product2")
+  User        User        @relation(fields: [userId], references: [userId], map: "fk_User_has_Product_User1")
 
-  @@id([orderId, User_userId, Product_productId, orderType])
+  @@id([orderId, userId, productId, orderType, orderStatus])
   @@index([orderType], map: "fk_Order_OrderType1_idx")
-  @@index([Product_productId], map: "fk_User_has_Product_Product2_idx")
-  @@index([User_userId], map: "fk_User_has_Product_User1_idx")
+  @@index([productId], map: "fk_User_has_Product_Product2_idx")
+  @@index([userId], map: "fk_User_has_Product_User1_idx")
+  @@index([orderStatus], map: "fk_Order_OrderStatus1_idx")
 }
 
 model OrderType {
@@ -70,7 +73,7 @@ model Product {
   totalPrice Int      @db.UnsignedInt
   createdAt  DateTime @default(now()) @db.DateTime(0)
   updatedAt  DateTime @db.DateTime(0)
-  Store      Store    @relation(fields: [storeId], references: [storeId], onDelete: NoAction, onUpdate: NoAction, map: "fk_Product_Store1")
+  Store      Store    @relation(fields: [storeId], references: [storeId], map: "fk_Product_Store1")
   Order      Order[]
 
   @@id([productId, storeId])
@@ -83,4 +86,9 @@ model Store {
   createdAt DateTime  @default(now()) @db.DateTime(0)
   updatedAt DateTime  @db.DateTime(0)
   Product   Product[]
+}
+
+model OrderStatus {
+  orderStatus String  @id @unique(map: "orderStatus_UNIQUE") @db.VarChar(20)
+  Order       Order[]
 }

@@ -1,10 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import { role } from './seeds';
+import { orderStatus, orderType } from './seeds';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  await Promise.all([role()]);
+  await Promise.all([orderType(), orderStatus()]);
 }
 
 main()
