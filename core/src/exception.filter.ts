@@ -1,7 +1,7 @@
 import { Catch, ArgumentsHost, HttpException } from '@nestjs/common';
 import { BaseExceptionFilter, HttpAdapterHost } from '@nestjs/core';
 import { Prisma } from '@prisma/client';
-import { PrismaExceptionCatcher } from '@providers/postgresql/prisma/exception.catcher';
+import { PrismaExceptionCatcher } from '@providers/mysql/prisma/exception.catcher';
 import { LoggerService } from '@libs/logger';
 
 @Catch()

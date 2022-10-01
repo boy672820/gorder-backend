@@ -37,4 +37,4 @@ lerna-debug.log*
 # ignore files..
 # .env
 # .env*
-/core/src/providers/postgresql/prisma/migrations/*
+/core/src/providers/mysql/prisma/migrations/*

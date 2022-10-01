@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
-import { PrismaService } from '@core/providers/postgresql/prisma';
+import { PrismaService } from '@core/providers/mysql/prisma';
 import { AppConfigService } from '@config/app';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';

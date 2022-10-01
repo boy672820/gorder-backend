@@ -1,9 +1,9 @@
 import { Global, Module } from '@nestjs/common';
 import { AppConfigModule } from '@config/app';
-import { PrismaModule } from '@providers/postgresql/prisma';
+import { PrismaModule } from '@providers/mysql/prisma';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionFilter } from './exception.filter';
-import { PrismaExceptionCatcher } from '@providers/postgresql/prisma/exception.catcher';
+import { PrismaExceptionCatcher } from '@providers/mysql/prisma/exception.catcher';
 import { LoggerModule } from '@libs/logger/module';
 
 @Global()

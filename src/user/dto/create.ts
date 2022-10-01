@@ -4,6 +4,12 @@ import { IsEmail } from 'class-validator';
 import { IsPassword } from '@core/common/validators';
 
 export class CreateUserDto implements Prisma.UserCreateInput {
+  userId?: number | bigint;
+  realname: string;
+  createdAt?: string | Date;
+  updatedAt: string | Date;
+  History?: Prisma.HistoryCreateNestedManyWithoutUserInput;
+  Order?: Prisma.OrderCreateNestedManyWithoutUserInput;
   @ApiProperty()
   @IsEmail()
   readonly email: string;

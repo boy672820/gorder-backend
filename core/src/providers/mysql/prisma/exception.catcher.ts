@@ -8,9 +8,9 @@ export class PrismaExceptionCatcher {
     const meta = exception?.meta['target'] as any;
 
     if (exception.code === 'P2002') {
-      if (meta.includes(Prisma.UserScalarFieldEnum.email)) {
-        return new AlreadyExistsEmailException();
-      }
+      // if (meta.includes(Prisma.UserScalarFieldEnum.email)) {
+      //   return new AlreadyExistsEmailException();
+      // }
     }
 
     return new InternalServerErrorException();
