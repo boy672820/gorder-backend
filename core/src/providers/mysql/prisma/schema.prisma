@@ -8,13 +8,13 @@ datasource db {
 }
 
 model User {
-  userId    BigInt    @id @unique(map: "userId_UNIQUE") @default(autoincrement()) @db.UnsignedBigInt
-  email     String    @unique(map: "email_UNIQUE") @db.VarChar(255)
-  realname  String    @db.VarChar(45)
-  createdAt DateTime  @default(now()) @db.DateTime(0)
-  updatedAt DateTime  @db.DateTime(0)
-  History   History[]
-  Order     Order[]
+  userId         BigInt          @id @unique(map: "userId_UNIQUE") @default(autoincrement()) @db.UnsignedBigInt
+  email          String          @unique(map: "email_UNIQUE") @db.VarChar(255)
+  createdAt      DateTime        @default(now()) @db.DateTime(0)
+  updatedAt      DateTime        @db.DateTime(0)
+  Authentication Authentication?
+  History        History[]
+  Order          Order[]
 }
 
 model History {
@@ -92,4 +92,11 @@ model Store {
 model OrderStatus {
   orderStatus String  @id @unique(map: "orderStatus_UNIQUE") @db.VarChar(20)
   Order       Order[]
+}
+
+model Authentication {
+  userId       BigInt @id @unique(map: "userId_UNIQUE") @db.UnsignedBigInt
+  accessToken  String @db.VarChar(255)
+  refreshToken String @db.VarChar(255)
+  User         User   @relation(fields: [userId], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_Authentication_User1")
 }

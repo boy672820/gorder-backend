@@ -5,7 +5,13 @@ import { SlackService } from '@providers/slack';
 export class AuthService {
   constructor(private readonly slack: SlackService) {}
 
-  getIdentify(code: string) {
-    return this.slack.getIdentity(code);
+  async signIn(code: string) {
+    const user = await this.slack.accessAuthedUser(code);
+
+    return this.slack.getIdentity(user.access_token);
+  }
+
+  getIdentity(token: string) {
+    return this.slack.getIdentity(token);
   }
 }

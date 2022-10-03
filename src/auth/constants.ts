@@ -1,0 +1,1 @@
+export const SLACK_ACCESS_TOKEN = 'SLACK_ACCESS_TOKEN';

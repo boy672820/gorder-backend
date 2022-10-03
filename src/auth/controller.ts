@@ -1,6 +1,8 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { SlackOAuthRedirectParameterPipe } from '@core/common/pipes/slack';
+import { User } from '@core/common/decorators/auth';
 import { AuthService } from './service';
+import { AccessTokenGuard } from './guards/access-token';
 
 @Controller('auth')
 export class AuthController {
@@ -8,6 +10,13 @@ export class AuthController {
 
   @Get()
   signIn(@Query('code', new SlackOAuthRedirectParameterPipe()) code: string) {
-    return this.service.getIdentify(code);
+    return this.service.signIn(code);
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Post()
+  me(@User() user: any) {
+    return user;
+    // return this.service.getIdentity(data.token);
   }
 }

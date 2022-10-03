@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { SlackConfigService } from '@config';
 import { WebClient } from '@slack/web-api';
+import { AuthedUser } from '@slack/web-api/dist/response/OauthV2AccessResponse';
 
 @Injectable()
 export class SlackService {
@@ -9,19 +10,17 @@ export class SlackService {
     private readonly slackConfig: SlackConfigService,
   ) {}
 
-  private getAccessToken(code: string) {
+  accessAuthedUser(code: string): Promise<AuthedUser> {
     return this.webClient.oauth.v2
       .access({
         client_id: this.slackConfig.clientId,
         client_secret: this.slackConfig.secret,
         code,
       })
-      .then((response) => response.authed_user.access_token);
+      .then((response) => response.authed_user);
   }
 
-  async getIdentity(code: string) {
-    const token = await this.getAccessToken(code);
-
+  getIdentity(token: string) {
     return this.webClient.users.identity({ token });
   }
 }
