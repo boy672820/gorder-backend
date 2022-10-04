@@ -11,7 +11,7 @@ model User {
   userId         BigInt          @id @unique(map: "userId_UNIQUE") @default(autoincrement()) @db.UnsignedBigInt
   email          String          @unique(map: "email_UNIQUE") @db.VarChar(255)
   createdAt      DateTime        @default(now()) @db.DateTime(0)
-  updatedAt      DateTime        @db.DateTime(0)
+  updatedAt      DateTime        @default(now()) @db.DateTime(0)
   Authentication Authentication?
   History        History[]
   Order          Order[]
@@ -95,8 +95,8 @@ model OrderStatus {
 }
 
 model Authentication {
-  userId       BigInt @id @unique(map: "userId_UNIQUE") @db.UnsignedBigInt
-  accessToken  String @db.VarChar(255)
-  refreshToken String @db.VarChar(255)
-  User         User   @relation(fields: [userId], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_Authentication_User1")
+  userId       BigInt  @id @unique(map: "userId_UNIQUE") @db.UnsignedBigInt
+  accessToken  String? @db.VarChar(255)
+  refreshToken String? @db.VarChar(255)
+  User         User    @relation(fields: [userId], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_Authentication_User1")
 }

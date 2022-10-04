@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { SlackConfigService } from '@config';
-import { WebClient } from '@slack/web-api';
+import { UsersIdentityResponse, WebClient } from '@slack/web-api';
 import { AuthedUser } from '@slack/web-api/dist/response/OauthV2AccessResponse';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class SlackService {
       .then((response) => response.authed_user);
   }
 
-  getIdentity(token: string) {
+  getIdentity(token: string): Promise<UsersIdentityResponse> {
     return this.webClient.users.identity({ token });
   }
 }
