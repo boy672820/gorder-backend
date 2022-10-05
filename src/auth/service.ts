@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { SlackService } from '@providers/slack';
 import { PrismaService } from '@providers/mysql/prisma';
-import { Prisma } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { UsersIdentityResponse } from '@slack/web-api';
 
 @Injectable()
@@ -36,7 +36,7 @@ export class AuthService {
    * Find or create user by Slack OAuth code
    * @param code Slack OAuth code
    */
-  async findOrCreate(code: string): Promise<void> {
+  async findOrCreate(code: string): Promise<User> {
     // Slack OAuth & get tokens
     const { accessToken, refreshToken, identity } =
       await this.getTokenAndIdentity(code);
@@ -47,19 +47,23 @@ export class AuthService {
       select: { userId: true },
     });
 
+    // If user exists, update access token
     if (!user) {
-      await this.prisma.user.create({
+      return this.prisma.user.create({
         data: {
           email: identity.user.email,
           Authentication: { create: { accessToken, refreshToken } },
         },
       });
-    } else {
-      await this.prisma.authentication.update({
-        where: { userId: user.userId },
-        data: { accessToken, refreshToken },
-      });
     }
+
+    // If user exists, update access token
+    await this.prisma.authentication.update({
+      where: { userId: user.userId },
+      data: { accessToken, refreshToken },
+    });
+
+    return user;
   }
 
   /**

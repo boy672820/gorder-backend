@@ -1,22 +1,23 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseInterceptors } from '@nestjs/common';
 import { SlackOAuthRedirectParameterPipe } from '@core/common/pipes/slack';
-import { User } from '@core/common/decorators/auth';
+import { User, Public } from '@core/common/decorators/auth';
 import { AuthService } from './service';
-import { AccessTokenGuard } from './guards/access-token';
-import { UserPayload } from './types';
+import { AuthSignInterceptor } from './interceptors';
+import type { JWTUserPayload } from '@core/authentication';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly service: AuthService) {}
 
+  @Public()
+  @UseInterceptors(AuthSignInterceptor)
   @Get()
   signIn(@Query('code', new SlackOAuthRedirectParameterPipe()) code: string) {
     return this.service.findOrCreate(code);
   }
 
-  @UseGuards(AccessTokenGuard)
   @Get('me')
-  me(@User() user: UserPayload) {
-    return user;
+  me(@User() user: JWTUserPayload) {
+    return this.service.getIdentity(user.accessToken);
   }
 }

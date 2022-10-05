@@ -5,10 +5,11 @@ import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionFilter } from './exception.filter';
 import { PrismaExceptionCatcher } from '@providers/mysql/prisma/exception.catcher';
 import { LoggerModule } from '@libs/logger/module';
+import { CoreAuthModule } from './authentication/module';
 
 @Global()
 @Module({
-  imports: [AppConfigModule, PrismaModule, LoggerModule],
+  imports: [AppConfigModule, PrismaModule, LoggerModule, CoreAuthModule],
   providers: [
     PrismaExceptionCatcher,
     {

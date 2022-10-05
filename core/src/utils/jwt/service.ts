@@ -1,26 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService as _JwtService, JwtSignOptions } from '@nestjs/jwt';
-import { CryptoService } from '@utils/crypto';
+import { CryptoService } from './crypto';
 
 @Injectable()
 export class JwtService {
   constructor(
     private readonly jwtService: _JwtService,
-    private readonly cryptoService: CryptoService,
+    private readonly crypto: CryptoService,
   ) {}
 
-  verify(jwt: string) {
+  verify<T = any>(jwt: string): T {
     const verified = this.jwtService.verify(jwt);
+    const payload = this.crypto.decrypt(verified.sub);
 
-    return verified;
+    return JSON.parse(payload);
   }
 
-  create(payload, options?: JwtSignOptions) {
-    const string = JSON.stringify(payload);
-    const sub = this.cryptoService.encrypt(string);
+  /**
+   * JWT 생성
+   *
+   * 생성 시 암호화
+   * @param payload 페이로드
+   * @param options 옵션
+   * @returns JWT
+   */
+  sign<T extends Record<string, string>>(
+    sub: string,
+    _claims: T,
+    options?: JwtSignOptions,
+  ): string {
+    const claims: { [key: string]: string } = {};
 
-    const jwt = this.jwtService.sign({ sub }, options);
+    for (const key of Object.keys(_claims)) {
+      claims[key] = this.crypto.encrypt(_claims[key]);
+    }
 
-    return jwt;
+    const payload = {
+      sub: this.crypto.encrypt(sub),
+      ...claims,
+    };
+
+    return this.jwtService.sign(payload, options);
   }
 }

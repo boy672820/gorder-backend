@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { JwtOptionsFactory } from '@nestjs/jwt';
-import { JwtConfigService as _JwtConfigService } from '@config/jwt';
+import { AuthConfigService } from '@config/auth';
 
 @Injectable()
 export class JwtConfigService implements JwtOptionsFactory {
-  constructor(private readonly jwtConfig: _JwtConfigService) {
+  constructor(private readonly jwtConfig: AuthConfigService) {
     const secret = this.jwtConfig.secret;
     const expiration = this.jwtConfig.expiration;
 
