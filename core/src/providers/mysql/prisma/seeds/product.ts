@@ -1,9 +1,9 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const seedName = 'Product';
 const prisma = new PrismaClient().product;
 
-const inputs: Prisma.ProductCreateInput[] = [
+const inputs = [
   {
     store: { connect: { storeId: 1 } },
     name: '아메리카노 ICE',
@@ -262,15 +262,17 @@ export async function product() {
   console.log(`Start "${seedName}" seeding ...`);
 
   const promises = [];
+  let number = 1;
 
   for (const data of inputs) {
     promises.push(
       prisma.upsert({
         where: { name: data.name },
-        create: data,
-        update: data,
+        create: { ...data, number },
+        update: { ...data, number },
       }),
     );
+    number += 1;
   }
 
   await Promise.all(promises);

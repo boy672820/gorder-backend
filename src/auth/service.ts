@@ -49,11 +49,12 @@ export class AuthService {
 
     // If user exists, update access token
     if (!user) {
-      return this.prisma.user.create({
+      return this.prisma.user.create<Prisma.UserCreateArgs>({
         data: {
           email: identity.user.email,
-          Authentication: { create: { accessToken, refreshToken } },
+          authentication: { create: { accessToken, refreshToken } },
         },
+        select: { userId: true },
       });
     }
 

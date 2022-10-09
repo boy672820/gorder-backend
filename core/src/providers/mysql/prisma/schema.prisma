@@ -12,38 +12,39 @@ model User {
   email          String          @unique(map: "email_UNIQUE") @db.VarChar(255)
   createdAt      DateTime        @default(now()) @db.DateTime(0)
   updatedAt      DateTime        @default(now()) @db.DateTime(0)
-  Authentication Authentication?
-  History        History[]
-  Order          Order[]
+  authentication Authentication?
+  history        History[]
+  order          Order[]
 }
 
 model History {
   historyId   BigInt      @unique(map: "historyId_UNIQUE") @default(autoincrement()) @db.UnsignedBigInt
   userId      BigInt      @db.UnsignedBigInt
-  historyType String      @db.VarChar(20)
+  type        String      @map("historyType") @db.VarChar(20)
   amount      Int         @db.UnsignedInt
   storeName   String      @db.VarChar(45)
   productName String      @db.VarChar(45)
   basePrice   Int         @db.UnsignedInt
   discount    Int         @db.UnsignedTinyInt
+  totalPrice  Int         @db.UnsignedInt
   createdAt   DateTime    @default(now()) @db.DateTime(0)
-  HistoryType HistoryType @relation(fields: [historyType], references: [historyType], onDelete: NoAction, onUpdate: NoAction, map: "fk_History_HistoryType1")
-  User        User        @relation(fields: [userId], references: [userId], onDelete: Cascade, map: "fk_User_has_Product_User")
+  historyType HistoryType @relation(fields: [type], references: [historyType], onDelete: NoAction, onUpdate: NoAction, map: "fk_History_HistoryType1")
+  user        User        @relation(fields: [userId], references: [userId], onDelete: Cascade, map: "fk_User_has_Product_User")
 
-  @@id([historyId, userId, historyType])
-  @@index([historyType], map: "fk_History_HistoryType1_idx")
+  @@id([historyId, userId, type])
+  @@index([type], map: "fk_History_HistoryType1_idx")
   @@index([userId], map: "fk_User_has_Product_User_idx")
 }
 
 model HistoryType {
   historyType String    @id @unique(map: "name_UNIQUE") @db.VarChar(20)
-  History     History[]
+  histories   History[]
 }
 
 model Order {
   orderId     BigInt      @unique(map: "orderId_UNIQUE") @default(autoincrement()) @db.UnsignedBigInt
   userId      BigInt      @db.UnsignedBigInt
-  productId   BigInt      @db.UnsignedBigInt
+  productId   Int         @db.UnsignedInt
   amount      Int         @db.UnsignedInt
   orderType   String      @db.VarChar(20)
   orderStatus String      @db.VarChar(20)
@@ -66,12 +67,13 @@ model OrderType {
 }
 
 model Product {
-  productId  BigInt   @unique(map: "productId_UNIQUE") @default(autoincrement()) @db.UnsignedBigInt
+  productId  Int      @unique(map: "productId_UNIQUE") @default(autoincrement()) @db.UnsignedInt
   storeId    Int      @db.UnsignedInt
   name       String   @unique(map: "name_UNIQUE") @db.VarChar(45)
   basePrice  Int      @db.UnsignedInt
   discount   Int      @default(0) @db.UnsignedTinyInt
   totalPrice Int      @db.UnsignedInt
+  number     Int      @db.UnsignedTinyInt
   createdAt  DateTime @default(now()) @db.DateTime(0)
   updatedAt  DateTime @default(now()) @db.DateTime(0)
   store      Store    @relation(fields: [storeId], references: [storeId], map: "fk_Product_Store1")
