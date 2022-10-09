@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { SlackService } from '@providers/slack';
 import { PrismaService } from '@providers/mysql/prisma';
 import { Prisma, User } from '@prisma/client';
-import { UsersIdentityResponse } from '@slack/web-api';
+import type { UsersIdentityResponse } from '@slack/web-api';
 
 @Injectable()
 export class AuthService {
@@ -71,7 +71,7 @@ export class AuthService {
    * @param token Access token
    * @returns User identity
    */
-  getIdentity(token: string) {
+  getIdentity(token: string): Promise<UsersIdentityResponse> {
     return this.slack.getIdentity(token);
   }
 }

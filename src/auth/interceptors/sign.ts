@@ -45,21 +45,6 @@ export class AuthSignInterceptor<T = AuthResult> implements NestInterceptor {
     );
   }
 
-  /**
-   * 로그인 인증토큰 업데이트
-   * @param param0
-   * @returns
-   */
-  private async updateAuth(
-    where: Prisma.AuthenticationWhereUniqueInput,
-    data: Prisma.AuthenticationUpdateInput,
-  ): Promise<void> {
-    await this.prisma.authentication.update({
-      where,
-      data,
-    });
-  }
-
   // -----------------------------------------------------------------------
 
   /**
@@ -79,8 +64,6 @@ export class AuthSignInterceptor<T = AuthResult> implements NestInterceptor {
     const accessToken = this.generateToken(userId);
     const refreshToken = this.generateRefreshToken(userId);
     const auth = { accessToken, refreshToken };
-
-    this.updateAuth({ userId }, auth);
 
     delete result.userId;
     return { ...result, ...auth };

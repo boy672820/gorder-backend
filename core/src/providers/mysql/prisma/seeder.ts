@@ -1,10 +1,14 @@
 import { PrismaClient } from '@prisma/client';
-import { orderStatus, orderType } from './seeds';
+import { orderStatus, orderType, store, product } from './seeds';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  await Promise.all([orderType(), orderStatus()]);
+  await Promise.all([
+    orderType(),
+    orderStatus(),
+    store().then(() => product()),
+  ]);
 }
 
 main()

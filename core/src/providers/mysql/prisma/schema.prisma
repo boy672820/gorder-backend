@@ -68,14 +68,14 @@ model OrderType {
 model Product {
   productId  BigInt   @unique(map: "productId_UNIQUE") @default(autoincrement()) @db.UnsignedBigInt
   storeId    Int      @db.UnsignedInt
-  name       String   @db.VarChar(45)
+  name       String   @unique(map: "name_UNIQUE") @db.VarChar(45)
   basePrice  Int      @db.UnsignedInt
   discount   Int      @default(0) @db.UnsignedTinyInt
   totalPrice Int      @db.UnsignedInt
   createdAt  DateTime @default(now()) @db.DateTime(0)
-  updatedAt  DateTime @db.DateTime(0)
-  Store      Store    @relation(fields: [storeId], references: [storeId], map: "fk_Product_Store1")
-  Order      Order[]
+  updatedAt  DateTime @default(now()) @db.DateTime(0)
+  store      Store    @relation(fields: [storeId], references: [storeId], map: "fk_Product_Store1")
+  order      Order[]
 
   @@id([productId, storeId])
   @@index([storeId], map: "fk_Product_Store1_idx")
@@ -85,7 +85,7 @@ model Store {
   storeId   Int       @id @unique(map: "storeId_UNIQUE") @default(autoincrement()) @db.UnsignedInt
   name      String    @unique(map: "name_UNIQUE") @db.VarChar(45)
   createdAt DateTime  @default(now()) @db.DateTime(0)
-  updatedAt DateTime  @db.DateTime(0)
+  updatedAt DateTime  @default(now()) @db.DateTime(0)
   Product   Product[]
 }
 

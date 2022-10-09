@@ -4,6 +4,7 @@ import { User, Public } from '@core/common/decorators/auth';
 import { AuthService } from './service';
 import { AuthSignInterceptor } from './interceptors';
 import type { JWTUserPayload } from '@core/authentication';
+import type { UsersIdentityResponse } from '@slack/web-api';
 
 @Controller('auth')
 export class AuthController {
@@ -17,7 +18,7 @@ export class AuthController {
   }
 
   @Get('me')
-  me(@User() user: JWTUserPayload) {
+  me(@User() user: JWTUserPayload): Promise<UsersIdentityResponse> {
     return this.service.getIdentity(user.accessToken);
   }
 }
