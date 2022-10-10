@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 datasource db {
@@ -42,23 +43,22 @@ model HistoryType {
 }
 
 model Order {
-  orderId     BigInt      @unique(map: "orderId_UNIQUE") @default(autoincrement()) @db.UnsignedBigInt
-  userId      BigInt      @db.UnsignedBigInt
-  productId   Int         @db.UnsignedInt
-  amount      Int         @db.UnsignedInt
-  orderType   String      @db.VarChar(20)
-  orderStatus String      @db.VarChar(20)
-  createdAt   DateTime    @default(now()) @db.DateTime(0)
-  OrderStatus OrderStatus @relation(fields: [orderStatus], references: [orderStatus], map: "fk_Order_OrderStatus1")
-  OrderType   OrderType   @relation(fields: [orderType], references: [orderType], map: "fk_Order_OrderType1")
-  Product     Product     @relation(fields: [productId], references: [productId], map: "fk_User_has_Product_Product2")
-  User        User        @relation(fields: [userId], references: [userId], map: "fk_User_has_Product_User1")
+  orderId     BigInt            @unique(map: "orderId_UNIQUE") @default(autoincrement()) @db.UnsignedBigInt
+  userId      BigInt            @db.UnsignedBigInt
+  amount      Int               @db.UnsignedInt
+  type        String            @map("orderType") @db.VarChar(20)
+  status      String            @map("orderStatus") @db.VarChar(20)
+  createdAt   DateTime          @default(now()) @db.DateTime(0)
+  orderStatus OrderStatus       @relation(fields: [status], references: [orderStatus], map: "fk_Order_OrderStatus1")
+  orderType   OrderType         @relation(fields: [type], references: [orderType], map: "fk_Order_OrderType1")
+  user        User              @relation(fields: [userId], references: [userId], map: "fk_User_has_Product_User1")
+  products    OrderHasProduct[]
 
-  @@id([orderId, userId, productId, orderType, orderStatus])
-  @@index([orderType], map: "fk_Order_OrderType1_idx")
-  @@index([productId], map: "fk_User_has_Product_Product2_idx")
+  @@id([orderId, userId, type, status])
+  @@unique([orderId, userId])
+  @@index([type], map: "fk_Order_OrderType1_idx")
   @@index([userId], map: "fk_User_has_Product_User1_idx")
-  @@index([orderStatus], map: "fk_Order_OrderStatus1_idx")
+  @@index([status], map: "fk_Order_OrderStatus1_idx")
 }
 
 model OrderType {
@@ -67,17 +67,17 @@ model OrderType {
 }
 
 model Product {
-  productId  Int      @unique(map: "productId_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  storeId    Int      @db.UnsignedInt
-  name       String   @unique(map: "name_UNIQUE") @db.VarChar(45)
-  basePrice  Int      @db.UnsignedInt
-  discount   Int      @default(0) @db.UnsignedTinyInt
-  totalPrice Int      @db.UnsignedInt
-  number     Int      @db.UnsignedTinyInt
-  createdAt  DateTime @default(now()) @db.DateTime(0)
-  updatedAt  DateTime @default(now()) @db.DateTime(0)
-  store      Store    @relation(fields: [storeId], references: [storeId], map: "fk_Product_Store1")
-  order      Order[]
+  productId       Int               @unique(map: "productId_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  storeId         Int               @db.UnsignedInt
+  name            String            @unique(map: "name_UNIQUE") @db.VarChar(45)
+  basePrice       Int               @db.UnsignedInt
+  discount        Int               @default(0) @db.UnsignedTinyInt
+  totalPrice      Int               @db.UnsignedInt
+  number          Int               @db.UnsignedTinyInt
+  createdAt       DateTime          @default(now()) @db.DateTime(0)
+  updatedAt       DateTime          @default(now()) @db.DateTime(0)
+  store           Store             @relation(fields: [storeId], references: [storeId], map: "fk_Product_Store1")
+  OrderHasProduct OrderHasProduct[]
 
   @@id([productId, storeId])
   @@index([storeId], map: "fk_Product_Store1_idx")
@@ -100,5 +100,18 @@ model Authentication {
   userId       BigInt  @id @unique(map: "userId_UNIQUE") @db.UnsignedBigInt
   accessToken  String? @db.VarChar(255)
   refreshToken String? @db.VarChar(255)
-  User         User    @relation(fields: [userId], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_Authentication_User1")
+  User         User    @relation(fields: [userId], references: [userId], onDelete: Cascade, map: "fk_Authentication_User1")
+}
+
+model OrderHasProduct {
+  orderId   BigInt  @db.UnsignedBigInt
+  userId    BigInt  @db.UnsignedBigInt
+  productId Int     @db.UnsignedInt
+  storeId   Int     @db.UnsignedInt
+  order     Order   @relation(fields: [orderId, userId], references: [orderId, userId], onDelete: Cascade, map: "fk_Order_has_Product_Order1")
+  product   Product @relation(fields: [productId, storeId], references: [productId, storeId], map: "fk_Order_has_Product_Product1")
+
+  @@id([orderId, userId, productId, storeId])
+  @@index([orderId, userId], map: "fk_Order_has_Product_Order1_idx")
+  @@index([productId, storeId], map: "fk_Order_has_Product_Product1_idx")
 }
