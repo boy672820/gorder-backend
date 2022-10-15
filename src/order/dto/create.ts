@@ -2,9 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
 import { IsNumber, IsPositive } from 'class-validator';
 
-export class CreateOrderDto
-  implements Omit<Prisma.OrderCreateInput, 'products'>
-{
+export class CreateOrderDto implements Prisma.OrderCreateInput {
   @ApiProperty({ description: '거래량' })
   @IsNumber(
     { allowNaN: false, allowInfinity: false },
@@ -27,7 +25,8 @@ export class CreateOrderDto
 
   // ------------------------------------------------------------------------
 
-  readonly user: Prisma.UserCreateNestedOneWithoutOrderInput;
-  readonly orderStatus: Prisma.OrderStatusCreateNestedOneWithoutOrderInput;
-  readonly orderType: Prisma.OrderTypeCreateNestedOneWithoutOrderInput;
+  orderStatus: Prisma.OrderStatusCreateNestedOneWithoutOrderInput;
+  orderType: Prisma.OrderTypeCreateNestedOneWithoutOrderInput;
+  product: Prisma.ProductCreateNestedOneWithoutOrderInput;
+  user: Prisma.UserCreateNestedOneWithoutOrderInput;
 }
