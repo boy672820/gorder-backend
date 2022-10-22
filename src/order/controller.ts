@@ -4,7 +4,8 @@ import { User } from '@core/common/decorators/auth';
 import { CreateOrderDto, CreateOrderQueriesDto } from './dto';
 import { OrderService } from './service';
 import type { JWTUserPayload } from '@core/authentication';
-import { OrderStatus } from '../../core/src/providers/mysql/prisma/enum';
+import { OrderStatus } from '@providers/mysql/prisma/enum';
+import { Prisma } from '@prisma/client';
 
 @ApiTags('주문')
 @Controller('order')
@@ -18,15 +19,19 @@ export class OrderController {
     @Query() { type }: CreateOrderQueriesDto,
     @Body() data: CreateOrderDto,
   ) {
-    return this.service.createMany(
-      data.products.map((productId) => ({
+    const inputs = data.products.reduce((acc, productId) => {
+      acc.push({
         productId,
-        type,
-        status: OrderStatus.Pending,
-        storeId: data.storeId,
         userId: user.userId,
         amount: data.amount,
-      })),
-    );
+        type,
+        status: OrderStatus.Pending,
+        storeId: 1,
+      });
+
+      return acc;
+    }, [] as Prisma.OrderCreateManyInput[]);
+
+    return this.service.createMany(inputs);
   }
 }
