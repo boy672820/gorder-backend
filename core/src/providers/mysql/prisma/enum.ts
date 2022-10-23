@@ -1,3 +1,7 @@
+export enum Store {
+  Genie = 1,
+}
+
 export enum OrderType {
   Pickup = 'Pickup',
   Order = 'Order',

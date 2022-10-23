@@ -9,7 +9,7 @@ export class PrismaExceptionCatcher {
 
     if (exception.code === 'P2003') {
       if (meta?.field_name === 'productId') {
-        throw new InvalidProductIdException();
+        return new InvalidProductIdException();
       }
     }
 

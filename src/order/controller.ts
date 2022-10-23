@@ -1,11 +1,11 @@
 import { Body, Controller, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Prisma } from '@prisma/client';
 import { User } from '@core/common/decorators/auth';
+import { OrderStatus, Store } from '@providers/mysql/prisma/enum';
 import { CreateOrderDto, CreateOrderQueriesDto } from './dto';
 import { OrderService } from './service';
 import type { JWTUserPayload } from '@core/authentication';
-import { OrderStatus } from '@providers/mysql/prisma/enum';
-import { Prisma } from '@prisma/client';
 
 @ApiTags('주문')
 @Controller('order')
@@ -26,7 +26,7 @@ export class OrderController {
         amount: data.amount,
         type,
         status: OrderStatus.Pending,
-        storeId: 1,
+        storeId: Store.Genie,
       });
 
       return acc;
