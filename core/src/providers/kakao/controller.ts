@@ -7,5 +7,7 @@ export class KakaoController {
   @Public()
   @UseGuards(KakaoAccessTokenGuard)
   @Get('authorize')
-  authorize(@User() user) {}
+  authorize(@User() user: string) {
+    return user;
+  }
 }
