@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Order, Prisma } from '@prisma/client';
 import { PrismaService } from '@providers/mysql/prisma';
 
 @Injectable()
@@ -8,5 +8,12 @@ export class OrderService {
 
   createMany(data: Prisma.OrderCreateManyInput[]) {
     return this.prisma.order.createMany({ data });
+  }
+
+  orders(params: {
+    where: Prisma.OrderWhereInput;
+    orderBy?: Prisma.OrderOrderByWithRelationInput;
+  }): Promise<Order[]> {
+    return this.prisma.order.findMany({ ...params });
   }
 }

@@ -1,9 +1,13 @@
-import { Body, Controller, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
 import { User } from '@core/common/decorators/auth';
 import { OrderStatus, Store } from '@providers/mysql/prisma/enum';
-import { CreateOrderDto, CreateOrderQueriesDto } from './dto';
+import {
+  CreateOrderDto,
+  CreateOrderQueriesDto,
+  FindOrderQueriesDto,
+} from './dto';
 import { OrderService } from './service';
 import type { JWTUserPayload } from '@core/authentication';
 
@@ -33,5 +37,13 @@ export class OrderController {
     }, [] as Prisma.OrderCreateManyInput[]);
 
     return this.service.createMany(inputs);
+  }
+
+  @Get()
+  orders(@Query() { type, orderBy }: FindOrderQueriesDto) {
+    return this.service.orders({
+      where: { type },
+      orderBy: { createdAt: orderBy },
+    });
   }
 }

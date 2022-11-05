@@ -1,3 +1,10 @@
+// Common
+export enum OrderBy {
+  Asc = 'asc',
+  Desc = 'desc',
+}
+
+// Enumerable tables
 export enum Store {
   Genie = 1,
 }
