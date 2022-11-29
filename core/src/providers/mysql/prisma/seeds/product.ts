@@ -5,6 +5,7 @@ const prisma = new PrismaClient().product;
 
 const inputs = [
   {
+    productId: 1,
     store: { connect: { storeId: 1 } },
     name: '아메리카노 ICE',
     basePrice: 3000,
@@ -12,6 +13,7 @@ const inputs = [
     totalPrice: 1500,
   },
   {
+    productId: 2,
     store: { connect: { storeId: 1 } },
     name: '아메리카노 HOT',
     basePrice: 3000,
@@ -19,6 +21,7 @@ const inputs = [
     totalPrice: 1500,
   },
   {
+    productId: 3,
     store: { connect: { storeId: 1 } },
     name: '헤이즐럿 아메리카노 ICE',
     basePrice: 3500,
@@ -26,6 +29,7 @@ const inputs = [
     totalPrice: 1750,
   },
   {
+    productId: 4,
     store: { connect: { storeId: 1 } },
     name: '헤이즐럿 아메리카노 HOT',
     basePrice: 3500,
@@ -33,6 +37,7 @@ const inputs = [
     totalPrice: 1750,
   },
   {
+    productId: 5,
     store: { connect: { storeId: 1 } },
     name: '카페라떼 ICE',
     basePrice: 3500,
@@ -40,6 +45,7 @@ const inputs = [
     totalPrice: 1750,
   },
   {
+    productId: 6,
     store: { connect: { storeId: 1 } },
     name: '카페라떼 HOT',
     basePrice: 3500,
@@ -47,6 +53,7 @@ const inputs = [
     totalPrice: 1750,
   },
   {
+    productId: 7,
     store: { connect: { storeId: 1 } },
     name: '연유라떼 ICE',
     basePrice: 4000,
@@ -54,6 +61,7 @@ const inputs = [
     totalPrice: 2000,
   },
   {
+    productId: 8,
     store: { connect: { storeId: 1 } },
     name: '연유라떼 HOT',
     basePrice: 4000,
@@ -61,6 +69,7 @@ const inputs = [
     totalPrice: 2000,
   },
   {
+    productId: 9,
     store: { connect: { storeId: 1 } },
     name: '바닐라라떼 ICE',
     basePrice: 4000,
@@ -68,6 +77,7 @@ const inputs = [
     totalPrice: 2000,
   },
   {
+    productId: 10,
     store: { connect: { storeId: 1 } },
     name: '바닐라라떼 HOT',
     basePrice: 4000,
@@ -75,6 +85,7 @@ const inputs = [
     totalPrice: 2000,
   },
   {
+    productId: 11,
     store: { connect: { storeId: 1 } },
     name: '카라멜마끼아또 ICE',
     basePrice: 4000,
@@ -82,6 +93,7 @@ const inputs = [
     totalPrice: 2000,
   },
   {
+    productId: 12,
     store: { connect: { storeId: 1 } },
     name: '카라멜마끼아또 HOT',
     basePrice: 4000,
@@ -89,6 +101,7 @@ const inputs = [
     totalPrice: 2000,
   },
   {
+    productId: 13,
     store: { connect: { storeId: 1 } },
     name: '콜드브루 아메리카노',
     basePrice: 3500,
@@ -96,6 +109,7 @@ const inputs = [
     totalPrice: 1750,
   },
   {
+    productId: 14,
     store: { connect: { storeId: 1 } },
     name: '콜드브루 라떼',
     basePrice: 4000,
@@ -103,6 +117,7 @@ const inputs = [
     totalPrice: 2000,
   },
   {
+    productId: 15,
     store: { connect: { storeId: 1 } },
     name: '복숭아 아이스티',
     basePrice: 3000,
@@ -110,6 +125,7 @@ const inputs = [
     totalPrice: 1500,
   },
   {
+    productId: 16,
     store: { connect: { storeId: 1 } },
     name: '레몬 아이스티',
     basePrice: 3000,
@@ -117,6 +133,7 @@ const inputs = [
     totalPrice: 1500,
   },
   {
+    productId: 17,
     store: { connect: { storeId: 1 } },
     name: '캐모마일',
     basePrice: 3000,
@@ -124,6 +141,7 @@ const inputs = [
     totalPrice: 1500,
   },
   {
+    productId: 18,
     store: { connect: { storeId: 1 } },
     name: '얼그레이',
     basePrice: 3000,
@@ -131,6 +149,7 @@ const inputs = [
     totalPrice: 1500,
   },
   {
+    productId: 19,
     store: { connect: { storeId: 1 } },
     name: '페퍼민트',
     basePrice: 3000,
@@ -138,6 +157,7 @@ const inputs = [
     totalPrice: 1500,
   },
   {
+    productId: 20,
     store: { connect: { storeId: 1 } },
     name: '히비스커스',
     basePrice: 3000,
@@ -145,6 +165,7 @@ const inputs = [
     totalPrice: 1500,
   },
   {
+    productId: 21,
     store: { connect: { storeId: 1 } },
     name: '청귤차',
     basePrice: 3500,
@@ -152,6 +173,7 @@ const inputs = [
     totalPrice: 1750,
   },
   {
+    productId: 22,
     store: { connect: { storeId: 1 } },
     name: '자몽차',
     basePrice: 3500,
@@ -159,6 +181,7 @@ const inputs = [
     totalPrice: 1750,
   },
   {
+    productId: 23,
     store: { connect: { storeId: 1 } },
     name: '유자차',
     basePrice: 3500,
@@ -166,6 +189,7 @@ const inputs = [
     totalPrice: 1750,
   },
   {
+    productId: 24,
     store: { connect: { storeId: 1 } },
     name: '허니자몽블랙티',
     basePrice: 4000,
@@ -173,6 +197,7 @@ const inputs = [
     totalPrice: 2000,
   },
   {
+    productId: 25,
     store: { connect: { storeId: 1 } },
     name: '애플유자티',
     basePrice: 4000,
@@ -180,6 +205,7 @@ const inputs = [
     totalPrice: 2000,
   },
   {
+    productId: 26,
     store: { connect: { storeId: 1 } },
     name: '피치코크',
     basePrice: 4000,
@@ -187,6 +213,7 @@ const inputs = [
     totalPrice: 2000,
   },
   {
+    productId: 27,
     store: { connect: { storeId: 1 } },
     name: '자몽에이드',
     basePrice: 4000,
@@ -194,6 +221,7 @@ const inputs = [
     totalPrice: 2000,
   },
   {
+    productId: 28,
     store: { connect: { storeId: 1 } },
     name: '청포도에이드',
     basePrice: 4200,
@@ -201,6 +229,7 @@ const inputs = [
     totalPrice: 2100,
   },
   {
+    productId: 29,
     store: { connect: { storeId: 1 } },
     name: '하와이언에이드',
     basePrice: 4200,
@@ -208,6 +237,7 @@ const inputs = [
     totalPrice: 2100,
   },
   {
+    productId: 30,
     store: { connect: { storeId: 1 } },
     name: '오렌지에이드',
     basePrice: 4200,
@@ -215,6 +245,7 @@ const inputs = [
     totalPrice: 2100,
   },
   {
+    productId: 31,
     store: { connect: { storeId: 1 } },
     name: '청귤에이드',
     basePrice: 4200,

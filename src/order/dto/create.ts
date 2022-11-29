@@ -27,6 +27,6 @@ export class CreateOrderDto implements Prisma.OrderCreateInput {
 
   orderStatus: Prisma.OrderStatusCreateNestedOneWithoutOrderInput;
   orderType: Prisma.OrderTypeCreateNestedOneWithoutOrderInput;
-  product: Prisma.ProductCreateNestedOneWithoutOrderInput;
+  // product: Prisma.ProductCreateNestedOneWithoutOrderInput;
   user: Prisma.UserCreateNestedOneWithoutOrderInput;
 }

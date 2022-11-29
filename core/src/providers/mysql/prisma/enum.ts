@@ -15,8 +15,9 @@ export enum OrderType {
 }
 
 export enum OrderStatus {
-  Pending = 'Pending',
-  Confirmed = 'Confirmed',
-  Cancelled = 'Cancelled',
-  Completed = 'Completed',
+  Pending = 'Pending', // 주문대기
+  Confirmed = 'Confirmed', // 주문확인
+  Delivering = 'Delivering', // 배송중
+  Completed = 'Completed', // 주문완료
+  Cancelled = 'Cancelled', // 주문취소
 }
