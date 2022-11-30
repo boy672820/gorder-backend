@@ -12,7 +12,6 @@ const orderedUser: Prisma.UserCreateInput = {
 const inputs: Prisma.OrderCreateInput[] = [
   {
     orderId: 1,
-    amount: 0,
     user: {
       connectOrCreate: {
         where: { email: orderedUser.email },
@@ -24,9 +23,143 @@ const inputs: Prisma.OrderCreateInput[] = [
     orderHasProducts: {
       createMany: {
         skipDuplicates: true,
-        data: [{ productId: 1 }],
+        data: [{ productId: 1 }, { productId: 1 }],
       },
     },
+    amount: 3000,
+  },
+  {
+    orderId: 2,
+    user: {
+      connectOrCreate: {
+        where: { email: orderedUser.email },
+        create: orderedUser,
+      },
+    },
+    orderType: { connect: { orderType: OrderType.Order } },
+    orderStatus: { connect: { orderStatus: OrderStatus.Pending } },
+    orderHasProducts: {
+      createMany: {
+        skipDuplicates: true,
+        data: [{ productId: 1 }, { productId: 5 }, { productId: 9 }],
+      },
+    },
+    amount: 5250,
+  },
+  {
+    orderId: 3,
+    user: {
+      connectOrCreate: {
+        where: { email: orderedUser.email },
+        create: orderedUser,
+      },
+    },
+    orderType: { connect: { orderType: OrderType.Order } },
+    orderStatus: { connect: { orderStatus: OrderStatus.Pending } },
+    orderHasProducts: {
+      createMany: {
+        skipDuplicates: true,
+        data: [
+          { productId: 16 },
+          { productId: 17 },
+          { productId: 26 },
+          { productId: 27 },
+        ],
+      },
+    },
+    amount: 7000,
+  },
+  {
+    orderId: 4,
+    user: {
+      connectOrCreate: {
+        where: { email: orderedUser.email },
+        create: orderedUser,
+      },
+    },
+    orderType: { connect: { orderType: OrderType.Order } },
+    orderStatus: { connect: { orderStatus: OrderStatus.Confirmed } },
+    orderHasProducts: {
+      createMany: {
+        skipDuplicates: true,
+        data: [
+          { productId: 16 },
+          { productId: 17 },
+          { productId: 26 },
+          { productId: 27 },
+        ],
+      },
+    },
+    amount: 7000,
+  },
+  {
+    orderId: 5,
+    user: {
+      connectOrCreate: {
+        where: { email: orderedUser.email },
+        create: orderedUser,
+      },
+    },
+    orderType: { connect: { orderType: OrderType.Order } },
+    orderStatus: { connect: { orderStatus: OrderStatus.Confirmed } },
+    orderHasProducts: {
+      createMany: {
+        skipDuplicates: true,
+        data: [
+          { productId: 16 },
+          { productId: 17 },
+          { productId: 26 },
+          { productId: 27 },
+        ],
+      },
+    },
+    amount: 7000,
+  },
+  {
+    orderId: 6,
+    user: {
+      connectOrCreate: {
+        where: { email: orderedUser.email },
+        create: orderedUser,
+      },
+    },
+    orderType: { connect: { orderType: OrderType.Order } },
+    orderStatus: { connect: { orderStatus: OrderStatus.Completed } },
+    orderHasProducts: {
+      createMany: {
+        skipDuplicates: true,
+        data: [
+          { productId: 16 },
+          { productId: 17 },
+          { productId: 26 },
+          { productId: 27 },
+        ],
+      },
+    },
+    amount: 7000,
+  },
+  {
+    orderId: 7,
+    user: {
+      connectOrCreate: {
+        where: { email: orderedUser.email },
+        create: orderedUser,
+      },
+    },
+    orderType: { connect: { orderType: OrderType.Order } },
+    orderStatus: { connect: { orderStatus: OrderStatus.Cancelled } },
+    orderHasProducts: {
+      createMany: {
+        skipDuplicates: true,
+        data: [
+          { productId: 16 },
+          { productId: 17 },
+          { productId: 26 },
+          { productId: 27 },
+        ],
+      },
+    },
+    amount: 7000,
   },
 ];
 

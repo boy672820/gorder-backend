@@ -253,6 +253,7 @@ const inputs = [
     totalPrice: 2100,
   },
   {
+    productId: 32,
     store: { connect: { storeId: 1 } },
     name: '퐁 크러쉬',
     basePrice: 4500,
@@ -260,6 +261,7 @@ const inputs = [
     totalPrice: 2250,
   },
   {
+    productId: 33,
     store: { connect: { storeId: 1 } },
     name: '플레인',
     basePrice: 4500,
@@ -267,6 +269,7 @@ const inputs = [
     totalPrice: 2250,
   },
   {
+    productId: 34,
     store: { connect: { storeId: 1 } },
     name: '딸기스무디',
     basePrice: 5000,
@@ -274,6 +277,7 @@ const inputs = [
     totalPrice: 2500,
   },
   {
+    productId: 35,
     store: { connect: { storeId: 1 } },
     name: '망고스무디',
     basePrice: 5000,
@@ -281,6 +285,7 @@ const inputs = [
     totalPrice: 2500,
   },
   {
+    productId: 36,
     store: { connect: { storeId: 1 } },
     name: '블루베리스무디',
     basePrice: 5000,
@@ -298,9 +303,16 @@ export async function product() {
   for (const data of inputs) {
     promises.push(
       prisma.upsert({
-        where: { name: data.name },
+        where: { productId: data.productId },
         create: { ...data, number },
-        update: { ...data, number },
+        update: {
+          store: data.store,
+          name: data.name,
+          basePrice: data.basePrice,
+          discount: data.discount,
+          totalPrice: data.totalPrice,
+          number,
+        },
       }),
     );
     number += 1;
