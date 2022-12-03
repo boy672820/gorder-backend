@@ -19,24 +19,11 @@ export class OrderController {
   @ApiOperation({ summary: '상품 주문하기' })
   @Post()
   create(
-    // @User() user: JWTUserPayload,
-    // @Query() { type }: CreateOrderQueriesDto,
-    // @Body() data: CreateOrderDto,
+    @User() user: JWTUserPayload,
+    @Query() { type }: CreateOrderQueriesDto,
+    @Body() data: CreateOrderDto,
   ) {
-    // const inputs = data.products.reduce((acc, productId) => {
-    //   acc.push({
-    //     productId,
-    //     userId: user.userId,
-    //     amount: data.amount,
-    //     type,
-    //     status: OrderStatus.Pending,
-    //     storeId: Store.Genie,
-    //   });
-
-    //   return acc;
-    // }, [] as Prisma.OrderCreateManyInput[]);
-
-    // return this.service.createMany(inputs);
+    return data;
   }
 
   @ApiOperation({ summary: '주문내역 가져오기' })

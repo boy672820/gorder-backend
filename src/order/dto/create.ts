@@ -1,6 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
-import { IsNumber, IsPositive } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsNotEmptyObject,
+  IsNumber,
+  IsObject,
+  IsPositive,
+  ValidateNested,
+} from 'class-validator';
+
+class OrderHasProductUncheckedDto
+  implements Prisma.OrderHasProductUncheckedCreateWithoutOrderInput
+{
+  readonly productId: number;
+}
+
+class CreateOrderHasProductDto {
+  readonly create: Array<OrderHasProductUncheckedDto>;
+}
 
 export class CreateOrderDto implements Prisma.OrderCreateInput {
   @ApiProperty({ description: '거래량' })
@@ -11,22 +28,16 @@ export class CreateOrderDto implements Prisma.OrderCreateInput {
   @IsPositive({ message: '거래량은 0보다 커야 합니다.' })
   readonly amount: number;
 
-  @IsNumber(
-    { allowNaN: false, allowInfinity: false },
-    { message: '잘못된 상품정보 입니다.', each: true },
-  )
-  readonly products: Array<number>;
+  @ApiProperty({ description: '상품목록' })
+  @IsNotEmptyObject({}, { message: '상품목록은 비어있을 수 없습니다.' })
+  @IsObject()
+  @ValidateNested({ message: '객체는 Object 형식이어야 합니다.' })
+  @Type(() => CreateOrderHasProductDto)
+  readonly orderHasProducts: CreateOrderHasProductDto;
 
-  @IsNumber(
-    { allowNaN: false, allowInfinity: false },
-    { message: '잘못된 상점정보 입니다.' },
-  )
-  readonly storeId: number;
-
-  // ------------------------------------------------------------------------
+  // --------------------------------------------------------------------------------
 
   orderStatus: Prisma.OrderStatusCreateNestedOneWithoutOrderInput;
   orderType: Prisma.OrderTypeCreateNestedOneWithoutOrderInput;
-  // product: Prisma.ProductCreateNestedOneWithoutOrderInput;
   user: Prisma.UserCreateNestedOneWithoutOrderInput;
 }

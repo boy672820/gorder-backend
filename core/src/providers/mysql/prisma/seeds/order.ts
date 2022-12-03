@@ -163,7 +163,7 @@ const inputs: Prisma.OrderCreateInput[] = [
   },
 ];
 
-export async function product() {
+export async function order() {
   console.log(`Start "${seedName}" seeding ...`);
 
   const promises = [];
