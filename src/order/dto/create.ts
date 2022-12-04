@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Prisma } from '@prisma/client';
+import { Prisma, Product } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
   IsNotEmptyObject,
@@ -12,10 +12,18 @@ import {
 class OrderHasProductUncheckedDto
   implements Prisma.OrderHasProductUncheckedCreateWithoutOrderInput
 {
-  readonly productId: number;
+  @IsNumber(
+    { allowNaN: false, allowInfinity: false },
+    { message: '상품 PK는 숫자만 입력 가능합니다.' },
+  )
+  @IsPositive({ message: '상품 PK는 0보다 커야 합니다.' })
+  readonly productId: Product['productId'];
 }
 
 class CreateOrderHasProductDto {
+  @IsObject({ each: true })
+  @ValidateNested({ message: '객체는 Object 형식이어야 합니다.' })
+  @Type(() => OrderHasProductUncheckedDto)
   readonly create: Array<OrderHasProductUncheckedDto>;
 }
 

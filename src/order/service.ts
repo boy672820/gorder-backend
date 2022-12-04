@@ -6,10 +6,7 @@ import { PrismaService } from '@providers/mysql/prisma';
 export class OrderService {
   constructor(private readonly prisma: PrismaService) {}
 
-  orders(params: {
-    where: Prisma.OrderWhereInput;
-    orderBy?: Prisma.OrderOrderByWithRelationInput;
-  }): Promise<Order[]> {
+  orders(params: Prisma.OrderFindManyArgs): Promise<Order[]> {
     return this.prisma.order.findMany(params);
   }
 
