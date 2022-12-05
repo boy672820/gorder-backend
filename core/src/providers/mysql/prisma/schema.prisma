@@ -103,12 +103,13 @@ model Authentication {
 }
 
 model OrderHasProduct {
-  orderId   BigInt  @db.UnsignedBigInt
-  productId Int     @db.UnsignedInt
-  order     Order   @relation(fields: [orderId], references: [orderId], onDelete: Cascade, map: "fk_Order_has_Product_Order1")
-  product   Product @relation(fields: [productId], references: [productId], onDelete: Cascade, map: "fk_Order_has_Product_Product1")
+  orderHasProductId BigInt  @unique(map: "orderHasProductId_UNIQUE") @default(autoincrement()) @db.UnsignedBigInt
+  orderId           BigInt  @db.UnsignedBigInt
+  productId         Int     @db.UnsignedInt
+  order             Order   @relation(fields: [orderId], references: [orderId], onDelete: Cascade, map: "fk_OrderHasProduct_Order1")
+  product           Product @relation(fields: [productId], references: [productId], onDelete: Cascade, map: "fk_OrderHasProduct_Product1")
 
-  @@id([orderId, productId])
-  @@index([orderId], map: "fk_Order_has_Product_Order1_idx")
-  @@index([productId], map: "fk_Order_has_Product_Product1_idx")
+  @@id([orderHasProductId, orderId, productId])
+  @@index([orderId], map: "fk_OrderHasProduct_Order1_idx")
+  @@index([productId], map: "fk_OrderHasProduct_Product1_idx")
 }

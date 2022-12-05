@@ -44,12 +44,11 @@ export class OrderController {
   orders(
     @Query() { type, status, orderBy, skip, take }: FindOrderQueriesDto,
   ): Promise<Order[]> {
-    return this.service.orders({
+    return this.service.ordersGroupByProduct({
       where: { type, status },
       orderBy: { createdAt: orderBy },
       skip: skip ? Number(skip) : undefined,
       take: take ? Number(take) : undefined,
-      select: ORDER_SELECT,
     });
   }
 }
