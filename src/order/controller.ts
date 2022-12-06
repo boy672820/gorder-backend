@@ -41,14 +41,16 @@ export class OrderController {
 
   @ApiOperation({ summary: '주문내역 가져오기' })
   @Get()
-  orders(
+  async orders(
     @Query() { type, status, orderBy, skip, take }: FindOrderQueriesDto,
-  ): Promise<Order[]> {
-    return this.service.ordersGroupByProduct({
+  ) {
+    const orders = await this.service.ordersGroupByProduct({
       where: { type, status },
       orderBy: { createdAt: orderBy },
       skip: skip ? Number(skip) : undefined,
       take: take ? Number(take) : undefined,
     });
+
+    return orders;
   }
 }

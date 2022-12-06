@@ -1,6 +1,4 @@
-import { Prisma } from '@prisma/client';
-
-export const ORDER_SELECT: Prisma.OrderSelect = {
+export const ORDER_SELECT = {
   orderId: true,
   amount: true,
   type: true,
@@ -11,6 +9,7 @@ export const ORDER_SELECT: Prisma.OrderSelect = {
     select: {
       product: {
         select: {
+          productId: true,
           name: true,
           basePrice: true,
           discount: true,
