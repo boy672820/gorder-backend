@@ -8,9 +8,7 @@ import {
   FindOrderQueriesDto,
 } from './dto';
 import { OrderService } from './service';
-import { ORDER_SELECT } from './constants';
 import type { JWTUserPayload } from '@core/authentication';
-import type { Order } from '@prisma/client';
 
 (BigInt.prototype as any).toJSON = function () {
   return this.toString();
@@ -35,7 +33,6 @@ export class OrderController {
         orderType: { connect: { orderType: type } },
         user: { connect: { userId } },
       },
-      select: ORDER_SELECT,
     });
   }
 

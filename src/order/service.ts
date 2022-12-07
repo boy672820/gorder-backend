@@ -1,70 +1,30 @@
 import { Injectable } from '@nestjs/common';
-import { Order, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '@providers/mysql/prisma';
 import { ORDER_SELECT } from './constants';
 
-// type OrderGroupByProductArgs = {
-//   where: { type: Order['type']; status?: Order['status'] };
-//   orderBy?: { createdAt: OrderBy };
-//   skip?: number;
-//   take?: number;
-// };
+type OrderFindManyArgs = Pick<
+  Prisma.OrderFindManyArgs,
+  'where' | 'orderBy' | 'skip' | 'take'
+>;
+
+type OrderCreateArgs = Pick<Prisma.OrderCreateArgs, 'data'>;
 
 @Injectable()
 export class OrderService {
   constructor(private readonly prisma: PrismaService) {}
 
-  // async ordersGroupByProduct({
-  //   where,
-  //   orderBy,
-  //   skip,
-  //   take,
-  // }: OrderGroupByProductArgs) {
-  //   const orders = await this.prisma.$queryRawUnsafe<Order[]>(
-  //     `SELECT
-  //       o.orderId,
-  //       o.amount,
-  //       o.orderType,
-  //       o.orderStatus,
-  //       o.createdAt,
-  //       u.email,
-  //       p.name,
-  //       p.basePrice,
-  //       p.discount,
-  //       p.totalPrice,
-  //       count(op.productId) AS totalProductCount
-  //     FROM gorder.Order AS o
-  //     LEFT JOIN gorder.User AS u ON o.userId = u.userId
-  //     LEFT JOIN gorder.OrderHasProduct AS op ON op.orderId = o.orderId
-  //     LEFT JOIN gorder.Product AS p ON p.productId = op.productId
-  //     WHERE o.orderType = '${where.type}' ${
-  //       where?.status ? `AND o.orderStatus = '${where.status}'` : ''
-  //     }
-  //     GROUP BY op.productId, op.orderId
-  //     ${orderBy?.createdAt ? `ORDER BY o.createdAt ${orderBy.createdAt}` : ''}`,
-  //   );
+  private _orders(params: OrderFindManyArgs) {
+    return this.prisma.order.findMany({ ...params, select: ORDER_SELECT });
+  }
 
-  //   const transformedOrders = orders.map((order) => ({ ...order }));
-
-  //   return transformedOrders;
-  // }
-
-  async ordersGroupByProduct(
-    params: Pick<
-      Prisma.OrderFindManyArgs,
-      'where' | 'orderBy' | 'take' | 'skip'
-    >,
+  private groupByProduct(
+    orders: Prisma.PromiseReturnType<typeof this._orders>,
   ) {
-    const orders = await this.prisma.order.findMany({
-      ...params,
-      // select: ORDER_SELECT,
-      select: ORDER_SELECT,
-    });
-
     const transformedOrders = orders.map((order) => {
       const countOf = {};
 
-      const serializeProducts = order.orderHasProducts.reduce((cur, row) => {
+      const serializedProducts = order.orderHasProducts.reduce((cur, row) => {
         const { productId } = row.product;
 
         countOf[productId] = countOf[productId] ? countOf[productId] + 1 : 1;
@@ -78,11 +38,11 @@ export class OrderService {
         return cur;
       }, [] as any);
 
-      console.log(countOf);
-
-      const orderHasProducts = serializeProducts.map((product) => {
+      const orderHasProducts = serializedProducts.map((product) => {
         for (const productId in countOf) {
           if (product.productId === Number(productId)) {
+            product.basePrice = countOf[productId] * product.basePrice;
+            product.totalPrice = countOf[productId] * product.totalPrice;
             product.totalProductCount = countOf[productId];
           }
         }
@@ -90,18 +50,24 @@ export class OrderService {
         return product;
       });
 
-      // for (const index in existList) {
-      //   console.log(index, existList[index]);
-      //   // orderHasProducts[index].totalProductCount = existList[index];
-      // }
-
       return { ...order, orderHasProducts };
     });
 
     return transformedOrders;
   }
 
-  create(params: Prisma.OrderCreateArgs): Promise<Order> {
-    return this.prisma.order.create(params);
+  async ordersGroupByProduct(params: OrderFindManyArgs) {
+    const orders = await this._orders(params);
+
+    return this.groupByProduct(orders);
+  }
+
+  async create(params: OrderCreateArgs) {
+    const newOrder = await this.prisma.order.create({
+      ...params,
+      select: ORDER_SELECT,
+    });
+
+    return this.groupByProduct([newOrder])[0];
   }
 }
