@@ -33,7 +33,7 @@ export class OrderService {
           return cur;
         }
 
-        cur.push({ ...row.product, totalProductCount: countOf[productId] });
+        cur.push({ ...row.product, quantity: countOf[productId] });
 
         return cur;
       }, [] as any);
@@ -43,7 +43,7 @@ export class OrderService {
           if (product.productId === Number(productId)) {
             product.basePrice = countOf[productId] * product.basePrice;
             product.totalPrice = countOf[productId] * product.totalPrice;
-            product.totalProductCount = countOf[productId];
+            product.quantity = countOf[productId];
           }
         }
 
