@@ -1,16 +1,12 @@
 import { IsEnum, IsNumber, IsOptional, IsPositive } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreateOrderQueriesDto } from './create-queries';
-import { OrderBy, OrderStatus } from '@providers/mysql/prisma/enum';
+import { OrderBy } from '@providers/mysql/prisma/enum';
 
 export class FindOrderQueriesDto extends CreateOrderQueriesDto {
   @IsOptional()
   @IsEnum(OrderBy, { message: '존재하지 않는 정렬 방식입니다.' })
   readonly orderBy: OrderBy;
-
-  @IsOptional()
-  @IsEnum(OrderStatus, { message: '존재하지 않는 주문 상태입니다.' })
-  readonly status: OrderStatus;
 
   @IsOptional()
   @IsNumber(

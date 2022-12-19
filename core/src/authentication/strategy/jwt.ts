@@ -36,6 +36,8 @@ export class AuthJwtStrategy extends PassportStrategy(Strategy) {
 
     const userId = BigInt(this.crypto.decrypt(payload.userId));
 
-    return this.service.authentication({ userId });
+    const auth = await this.service.authentication({ userId });
+
+    return auth;
   }
 }

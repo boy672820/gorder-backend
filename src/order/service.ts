@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '@providers/mysql/prisma';
+import { OrderStatus } from '../../core/src/providers/mysql/prisma/enum';
 import { ORDER_SELECT } from './constants';
+import { CreateOrderDto } from './dto';
 
 type OrderFindManyArgs = Pick<
   Prisma.OrderFindManyArgs,
@@ -57,9 +59,42 @@ export class OrderService {
   }
 
   async ordersGroupByProduct(params: OrderFindManyArgs) {
-    const orders = await this._orders(params);
+    const [
+      pendingOrders,
+      confirmedOrders,
+      deliveringOrders,
+      completedOrders,
+      cancelledOrders,
+    ] = await this.prisma.$transaction([
+      this._orders({
+        ...params,
+        where: { ...params.where, status: OrderStatus.Pending },
+      }),
+      this._orders({
+        ...params,
+        where: { ...params.where, status: OrderStatus.Confirmed },
+      }),
+      this._orders({
+        ...params,
+        where: { ...params.where, status: OrderStatus.Delivering },
+      }),
+      this._orders({
+        ...params,
+        where: { ...params.where, status: OrderStatus.Completed },
+      }),
+      this._orders({
+        ...params,
+        where: { ...params.where, status: OrderStatus.Cancelled },
+      }),
+    ]);
 
-    return this.groupByProduct(orders);
+    return {
+      pendingOrders: this.groupByProduct(pendingOrders),
+      confirmedOrders: this.groupByProduct(confirmedOrders),
+      deliveringOrders: this.groupByProduct(deliveringOrders),
+      completedOrders: this.groupByProduct(completedOrders),
+      cancelledOrders: this.groupByProduct(cancelledOrders),
+    };
   }
 
   async create(params: OrderCreateArgs) {
@@ -69,5 +104,32 @@ export class OrderService {
     });
 
     return this.groupByProduct([newOrder])[0];
+  }
+
+  productSummarizeAllPrices(
+    createProducts: CreateOrderDto['orderHasProducts']['create'],
+  ) {
+    return this.prisma.$transaction(
+      async (txClient: Prisma.TransactionClient) => {
+        let totalPrice = 0;
+        let discountPrice = 0;
+        let basePrice = 0;
+
+        for (const product of createProducts) {
+          const { productId } = product;
+
+          const productData = await txClient.product.findUnique({
+            where: { productId },
+            select: { basePrice: true, discountPrice: true, totalPrice: true },
+          });
+
+          totalPrice += productData.totalPrice;
+          discountPrice += productData.discountPrice;
+          basePrice += productData.basePrice;
+        }
+
+        return { totalPrice, discountPrice, basePrice };
+      },
+    );
   }
 }

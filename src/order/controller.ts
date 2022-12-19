@@ -1,13 +1,14 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User } from '@core/common/decorators/auth';
-import { OrderStatus } from '@providers/mysql/prisma/enum';
+import { OrderStatus } from '../../core/src/providers/mysql/prisma/enum';
+import { OrderService } from './service';
 import {
   CreateOrderDto,
   CreateOrderQueriesDto,
   FindOrderQueriesDto,
 } from './dto';
-import { OrderService } from './service';
+import { OrderDiscountCalculatorTransformPipe } from './pipes';
 import type { JWTUserPayload } from '@core/authentication';
 
 (BigInt.prototype as any).toJSON = function () {
@@ -24,7 +25,7 @@ export class OrderController {
   create(
     @User() { userId }: JWTUserPayload,
     @Query() { type }: CreateOrderQueriesDto,
-    @Body() data: CreateOrderDto,
+    @Body(OrderDiscountCalculatorTransformPipe) data: CreateOrderDto,
   ) {
     return this.service.create({
       data: {
@@ -38,11 +39,9 @@ export class OrderController {
 
   @ApiOperation({ summary: '주문내역 가져오기' })
   @Get()
-  async orders(
-    @Query() { type, status, orderBy, skip, take }: FindOrderQueriesDto,
-  ) {
+  async orders(@Query() { type, orderBy, skip, take }: FindOrderQueriesDto) {
     const orders = await this.service.ordersGroupByProduct({
-      where: { type, status },
+      where: { type },
       orderBy: { createdAt: orderBy },
       skip: skip ? Number(skip) : undefined,
       take: take ? Number(take) : undefined,

@@ -26,7 +26,9 @@ const inputs: Prisma.OrderCreateInput[] = [
         data: [{ productId: 1 }, { productId: 1 }],
       },
     },
-    amount: 3000,
+    basePrice: 6000,
+    discountPrice: 3000,
+    totalPrice: 3000,
   },
   {
     orderId: 2,
@@ -44,7 +46,9 @@ const inputs: Prisma.OrderCreateInput[] = [
         data: [{ productId: 1 }, { productId: 5 }, { productId: 9 }],
       },
     },
-    amount: 5250,
+    basePrice: 15000,
+    discountPrice: 5250,
+    totalPrice: 5250,
   },
   {
     orderId: 3,
@@ -67,7 +71,9 @@ const inputs: Prisma.OrderCreateInput[] = [
         ],
       },
     },
-    amount: 7000,
+    basePrice: 14000,
+    discountPrice: 7000,
+    totalPrice: 7000,
   },
   {
     orderId: 4,
@@ -90,7 +96,9 @@ const inputs: Prisma.OrderCreateInput[] = [
         ],
       },
     },
-    amount: 7000,
+    basePrice: 14000,
+    discountPrice: 7000,
+    totalPrice: 7000,
   },
   {
     orderId: 5,
@@ -113,7 +121,9 @@ const inputs: Prisma.OrderCreateInput[] = [
         ],
       },
     },
-    amount: 7000,
+    basePrice: 14000,
+    discountPrice: 7000,
+    totalPrice: 7000,
   },
   {
     orderId: 6,
@@ -136,7 +146,9 @@ const inputs: Prisma.OrderCreateInput[] = [
         ],
       },
     },
-    amount: 7000,
+    basePrice: 14000,
+    discountPrice: 7000,
+    totalPrice: 7000,
   },
   {
     orderId: 7,
@@ -159,7 +171,9 @@ const inputs: Prisma.OrderCreateInput[] = [
         ],
       },
     },
-    amount: 7000,
+    basePrice: 14000,
+    discountPrice: 7000,
+    totalPrice: 7000,
   },
 ];
 

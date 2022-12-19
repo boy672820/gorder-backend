@@ -45,7 +45,9 @@ model HistoryType {
 model Order {
   orderId          BigInt            @unique(map: "orderId_UNIQUE") @default(autoincrement()) @db.UnsignedBigInt
   userId           BigInt            @db.UnsignedBigInt
-  amount           Int               @db.UnsignedInt
+  basePrice        Int               @db.UnsignedInt
+  discountPrice    Int               @db.UnsignedInt
+  totalPrice       Int               @db.UnsignedInt
   type             String            @map("orderType") @db.VarChar(20)
   status           String            @map("orderStatus") @db.VarChar(20)
   createdAt        DateTime          @default(now()) @db.DateTime(0)
@@ -70,11 +72,13 @@ model Product {
   storeId          Int               @db.UnsignedInt
   name             String            @unique(map: "name_UNIQUE") @db.VarChar(45)
   basePrice        Int               @db.UnsignedInt
-  discount         Int               @default(0) @db.UnsignedTinyInt
+  discountPrice    Int               @db.UnsignedInt
+  discountPercent  Int               @default(0) @db.UnsignedTinyInt
   totalPrice       Int               @db.UnsignedInt
   number           Int               @db.UnsignedTinyInt
   createdAt        DateTime          @default(now()) @db.DateTime(0)
   updatedAt        DateTime          @default(now()) @db.DateTime(0)
+  imageUrl         String            @db.VarChar(255)
   store            Store             @relation(fields: [storeId], references: [storeId], onDelete: Cascade, map: "fk_Product_Store1")
   orderHasProducts OrderHasProduct[]
 

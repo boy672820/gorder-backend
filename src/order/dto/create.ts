@@ -28,14 +28,6 @@ class CreateOrderHasProductDto {
 }
 
 export class CreateOrderDto implements Prisma.OrderCreateInput {
-  @ApiProperty({ description: '거래량' })
-  @IsNumber(
-    { allowNaN: false, allowInfinity: false },
-    { message: '거래량은 숫자만 입력 가능합니다.' },
-  )
-  @IsPositive({ message: '거래량은 0보다 커야 합니다.' })
-  readonly amount: number;
-
   @ApiProperty({ description: '상품목록' })
   @IsNotEmptyObject({}, { message: '상품목록은 비어있을 수 없습니다.' })
   @IsObject()
@@ -45,6 +37,9 @@ export class CreateOrderDto implements Prisma.OrderCreateInput {
 
   // --------------------------------------------------------------------------------
 
+  basePrice: number;
+  discountPrice: number;
+  totalPrice: number;
   orderStatus: Prisma.OrderStatusCreateNestedOneWithoutOrderInput;
   orderType: Prisma.OrderTypeCreateNestedOneWithoutOrderInput;
   user: Prisma.UserCreateNestedOneWithoutOrderInput;

@@ -23,7 +23,8 @@ export class ProductService {
         productId: true,
         name: true,
         basePrice: true,
-        discount: true,
+        discountPercent: true,
+        discountPrice: true,
         totalPrice: true,
       },
     });

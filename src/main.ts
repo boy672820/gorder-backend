@@ -9,7 +9,12 @@ async function createApp() {
   const app = await NestFactory.create(AppModule);
 
   // Bind ValidationPipe
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    }),
+  );
 
   // Shutdown prisma after close application
   const prismaService = app.get(PrismaService);
@@ -29,7 +34,11 @@ async function createApp() {
   SwaggerModule.setup('docs', app, document);
 
   app.enableCors({
-    origin: ['http://localhost:8083', 'http://127.0.0.1:8083', 'http://192.168.0.17:8083'],
+    origin: [
+      'http://localhost:8083',
+      'http://127.0.0.1:8083',
+      'http://192.168.0.17:8083',
+    ],
   });
 
   return app;

@@ -7,7 +7,7 @@ import { ProductService } from './service';
 export class ProductController {
   constructor(private readonly service: ProductService) {}
 
-  @ApiOperation({ summary: '상품 전체가져오기' })
+  @ApiOperation({ summary: '상품 전체 가져오기' })
   @ApiParam({
     name: 'storeId',
     description: '매장PK',
