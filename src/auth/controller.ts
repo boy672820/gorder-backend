@@ -7,6 +7,7 @@ import { SlackOAuthRedirectPipe } from './pipes';
 //
 import type { UsersIdentityResponse } from '@slack/web-api';
 import { SlackAuthResult } from './types';
+import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -14,6 +15,7 @@ export class AuthController {
 
   @Public()
   @UseInterceptors(AuthSignInterceptor)
+  @ApiQuery({ name: 'code' })
   @Get()
   signIn(@Query('code', SlackOAuthRedirectPipe) result: SlackAuthResult) {
     return this.service.findOrCreate(result);
