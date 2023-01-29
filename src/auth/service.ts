@@ -41,7 +41,7 @@ export class AuthService {
     // Find or create user
     const user = await this.prisma.user.findUnique<Prisma.UserFindUniqueArgs>({
       where: { email: identity.user.email },
-      select: { userId: true },
+      select: { userId: true, email: true, name: true },
     });
 
     // If user exists, update access token
@@ -49,9 +49,10 @@ export class AuthService {
       return this.prisma.user.create<Prisma.UserCreateArgs>({
         data: {
           email: identity.user.email,
+          name: identity.user.name,
           authentication: { create: { accessToken, refreshToken } },
         },
-        select: { userId: true },
+        select: { userId: true, email: true, name: true },
       });
     }
 

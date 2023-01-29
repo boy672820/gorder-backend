@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 
 const orderedUser: Prisma.UserCreateInput = {
   email: 'order@geniesoft.io',
+  name: '이선주',
   authentication: { create: {} },
 };
 
