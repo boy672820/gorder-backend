@@ -27,7 +27,23 @@ export class AuthService {
     return { accessToken, refreshToken, identity };
   }
 
+  /**
+   * Get user identity by access token
+   * @param token Access token
+   * @returns User identity
+   */
+  getIdentity(token: string): Promise<UsersIdentityResponse> {
+    return this.slack.getIdentity(token);
+  }
+
   // --------------------------------------------------------------------------
+
+  user({ where }: { where: Prisma.UserWhereUniqueInput }): Promise<User> {
+    return this.prisma.user.findUnique<Prisma.UserFindUniqueArgs>({
+      where,
+      select: { userId: true, email: true, name: true },
+    });
+  }
 
   /**
    * Find or create user by Slack OAuth code
@@ -39,10 +55,7 @@ export class AuthService {
     identity,
   }: SlackAuthResult): Promise<User> {
     // Find or create user
-    const user = await this.prisma.user.findUnique<Prisma.UserFindUniqueArgs>({
-      where: { email: identity.user.email },
-      select: { userId: true, email: true, name: true },
-    });
+    const user = await this.user({ where: { email: identity.user.email } });
 
     // If user exists, update access token
     if (!user) {
@@ -63,14 +76,5 @@ export class AuthService {
     });
 
     return user;
-  }
-
-  /**
-   * Get user identity by access token
-   * @param token Access token
-   * @returns User identity
-   */
-  getIdentity(token: string): Promise<UsersIdentityResponse> {
-    return this.slack.getIdentity(token);
   }
 }

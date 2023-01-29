@@ -22,7 +22,15 @@ export class AuthController {
   }
 
   @Get('me')
-  me(@User() user: JWTUserPayload): Promise<UsersIdentityResponse> {
+  async me(@User() { userId }: JWTUserPayload) {
+    const user = await this.service.user({ where: { userId } });
+
+    delete user.userId;
+    return user;
+  }
+
+  @Get('identity')
+  identity(@User() user: JWTUserPayload): Promise<UsersIdentityResponse> {
     return this.service.getIdentity(user.accessToken);
   }
 }
