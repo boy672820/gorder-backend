@@ -3,6 +3,7 @@ import { SlackService } from '@providers/slack';
 import { PrismaService } from '@providers/mysql/prisma';
 import { Prisma, User } from '@prisma/client';
 import type { UsersIdentityResponse } from '@slack/web-api';
+import { SlackAuthResult } from './types';
 
 @Injectable()
 export class AuthService {
@@ -16,11 +17,7 @@ export class AuthService {
    * @param code Slack OAuth code
    * @returns Access & Refresh token and user identity
    */
-  private async getTokenAndIdentity(code: string): Promise<{
-    accessToken: string;
-    refreshToken: string;
-    identity: UsersIdentityResponse;
-  }> {
+  async getTokenAndIdentity(code: string): Promise<SlackAuthResult> {
     const authedUser = await this.slack.accessAuthedUser(code);
     const identity = await this.slack.getIdentity(authedUser.access_token);
 
@@ -36,11 +33,11 @@ export class AuthService {
    * Find or create user by Slack OAuth code
    * @param code Slack OAuth code
    */
-  async findOrCreate(code: string): Promise<User> {
-    // Slack OAuth & get tokens
-    const { accessToken, refreshToken, identity } =
-      await this.getTokenAndIdentity(code);
-
+  async findOrCreate({
+    accessToken,
+    refreshToken,
+    identity,
+  }: SlackAuthResult): Promise<User> {
     // Find or create user
     const user = await this.prisma.user.findUnique<Prisma.UserFindUniqueArgs>({
       where: { email: identity.user.email },

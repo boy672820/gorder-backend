@@ -33,13 +33,7 @@ async function createApp() {
 
   SwaggerModule.setup('docs', app, document);
 
-  app.enableCors({
-    origin: [
-      'http://localhost:8083',
-      'http://127.0.0.1:8083',
-      'http://192.168.0.17:8083',
-    ],
-  });
+  app.enableCors({ origin: '*' });
 
   return app;
 }

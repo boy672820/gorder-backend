@@ -2,7 +2,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import { OrderStatus, OrderType } from '../enum';
 
 const seedName = 'Order';
-const prisma = new PrismaClient().order;
+const prisma = new PrismaClient();
 
 const orderedUser: Prisma.UserCreateInput = {
   email: 'order@geniesoft.io',
@@ -13,10 +13,7 @@ const inputs: Prisma.OrderCreateInput[] = [
   {
     orderId: 1,
     user: {
-      connectOrCreate: {
-        where: { email: orderedUser.email },
-        create: orderedUser,
-      },
+      connect: { email: orderedUser.email },
     },
     orderType: { connect: { orderType: OrderType.Order } },
     orderStatus: { connect: { orderStatus: OrderStatus.Pending } },
@@ -33,10 +30,7 @@ const inputs: Prisma.OrderCreateInput[] = [
   {
     orderId: 2,
     user: {
-      connectOrCreate: {
-        where: { email: orderedUser.email },
-        create: orderedUser,
-      },
+      connect: { email: orderedUser.email },
     },
     orderType: { connect: { orderType: OrderType.Order } },
     orderStatus: { connect: { orderStatus: OrderStatus.Pending } },
@@ -53,10 +47,7 @@ const inputs: Prisma.OrderCreateInput[] = [
   {
     orderId: 3,
     user: {
-      connectOrCreate: {
-        where: { email: orderedUser.email },
-        create: orderedUser,
-      },
+      connect: { email: orderedUser.email },
     },
     orderType: { connect: { orderType: OrderType.Order } },
     orderStatus: { connect: { orderStatus: OrderStatus.Pending } },
@@ -78,10 +69,7 @@ const inputs: Prisma.OrderCreateInput[] = [
   {
     orderId: 4,
     user: {
-      connectOrCreate: {
-        where: { email: orderedUser.email },
-        create: orderedUser,
-      },
+      connect: { email: orderedUser.email },
     },
     orderType: { connect: { orderType: OrderType.Order } },
     orderStatus: { connect: { orderStatus: OrderStatus.Confirmed } },
@@ -103,10 +91,7 @@ const inputs: Prisma.OrderCreateInput[] = [
   {
     orderId: 5,
     user: {
-      connectOrCreate: {
-        where: { email: orderedUser.email },
-        create: orderedUser,
-      },
+      connect: { email: orderedUser.email },
     },
     orderType: { connect: { orderType: OrderType.Order } },
     orderStatus: { connect: { orderStatus: OrderStatus.Confirmed } },
@@ -128,10 +113,7 @@ const inputs: Prisma.OrderCreateInput[] = [
   {
     orderId: 6,
     user: {
-      connectOrCreate: {
-        where: { email: orderedUser.email },
-        create: orderedUser,
-      },
+      connect: { email: orderedUser.email },
     },
     orderType: { connect: { orderType: OrderType.Order } },
     orderStatus: { connect: { orderStatus: OrderStatus.Completed } },
@@ -153,10 +135,7 @@ const inputs: Prisma.OrderCreateInput[] = [
   {
     orderId: 7,
     user: {
-      connectOrCreate: {
-        where: { email: orderedUser.email },
-        create: orderedUser,
-      },
+      connect: { email: orderedUser.email },
     },
     orderType: { connect: { orderType: OrderType.Order } },
     orderStatus: { connect: { orderStatus: OrderStatus.Cancelled } },
@@ -182,9 +161,15 @@ export async function order() {
 
   const promises = [];
 
+  await prisma.user.upsert({
+    where: { email: orderedUser.email },
+    create: { ...orderedUser },
+    update: { ...orderedUser },
+  });
+
   for (const data of inputs) {
     promises.push(
-      prisma.upsert({
+      prisma.order.upsert({
         where: { orderId: data.orderId },
         create: { ...data },
         update: { ...data },

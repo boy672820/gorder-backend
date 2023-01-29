@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User } from '@core/common/decorators/auth';
 import { OrderStatus } from '../../core/src/providers/mysql/prisma/enum';
@@ -8,8 +17,13 @@ import {
   CreateOrderQueriesDto,
   FindOrderQueriesDto,
 } from './dto';
-import { OrderDiscountCalculatorTransformPipe } from './pipes';
+import {
+  OrderDiscountCalculatorTransformPipe,
+  OrderStatusValidationPipe,
+} from './pipes';
 import type { JWTUserPayload } from '@core/authentication';
+import { Order, Prisma } from '@prisma/client';
+import { ORDER_SELECT } from './constants';
 
 (BigInt.prototype as any).toJSON = function () {
   return this.toString();
@@ -34,6 +48,22 @@ export class OrderController {
         orderType: { connect: { orderType: type } },
         user: { connect: { userId } },
       },
+    });
+  }
+
+  @ApiTags('주문 상태변경')
+  @Patch(
+    `:${Prisma.OrderScalarFieldEnum.orderId}/status/:${Prisma.OrderScalarFieldEnum.status}`,
+  )
+  confirmOrder(
+    @Param(Prisma.OrderScalarFieldEnum.orderId, ParseIntPipe) orderId: number,
+    @Param(Prisma.OrderScalarFieldEnum.status, OrderStatusValidationPipe)
+    status: OrderStatus,
+  ): Promise<Order> {
+    return this.service.update({
+      where: { orderId },
+      data: { status },
+      select: ORDER_SELECT,
     });
   }
 

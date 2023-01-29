@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Order, Prisma } from '@prisma/client';
 import { PrismaService } from '@providers/mysql/prisma';
 import { OrderStatus } from '../../core/src/providers/mysql/prisma/enum';
 import { ORDER_SELECT } from './constants';
@@ -20,6 +20,11 @@ export class OrderService {
     return this.prisma.order.findMany({ ...params, select: ORDER_SELECT });
   }
 
+  /**
+   * 주문 상품 그룹화
+   * @param orders
+   * @returns
+   */
   private groupByProduct(
     orders: Prisma.PromiseReturnType<typeof this._orders>,
   ) {
@@ -44,6 +49,7 @@ export class OrderService {
         for (const productId in countOf) {
           if (product.productId === Number(productId)) {
             product.basePrice = countOf[productId] * product.basePrice;
+            product.discountPrice = countOf[productId] * product.discountPrice;
             product.totalPrice = countOf[productId] * product.totalPrice;
             product.quantity = countOf[productId];
           }
@@ -58,6 +64,11 @@ export class OrderService {
     return transformedOrders;
   }
 
+  /**
+   * 주문 상태별
+   * @param params
+   * @returns
+   */
   async ordersGroupByProduct(params: OrderFindManyArgs) {
     const [
       pendingOrders,
@@ -97,6 +108,11 @@ export class OrderService {
     };
   }
 
+  /**
+   * Create new order
+   * @param params OrderCreateArgs
+   * @returns Promise<Prisma.Order>
+   */
   async create(params: OrderCreateArgs) {
     const newOrder = await this.prisma.order.create({
       ...params,
@@ -106,6 +122,11 @@ export class OrderService {
     return this.groupByProduct([newOrder])[0];
   }
 
+  /**
+   * 주문 상품 가격 합산
+   * @param createProducts
+   * @returns
+   */
   productSummarizeAllPrices(
     createProducts: CreateOrderDto['orderHasProducts']['create'],
   ) {
@@ -131,5 +152,14 @@ export class OrderService {
         return { totalPrice, discountPrice, basePrice };
       },
     );
+  }
+
+  /**
+   * 주문 업데이트
+   * @param params
+   * @returns
+   */
+  update(params: Prisma.OrderUpdateArgs): Promise<Order> {
+    return this.prisma.order.update(params);
   }
 }

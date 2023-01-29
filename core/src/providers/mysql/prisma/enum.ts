@@ -10,14 +10,14 @@ export enum Store {
 }
 
 export enum OrderType {
-  Pickup = 'Pickup',
-  Order = 'Order',
+  Pickup = 'pickup',
+  Order = 'order',
 }
 
 export enum OrderStatus {
-  Pending = 'Pending', // 주문대기
-  Confirmed = 'Confirmed', // 주문확인
-  Delivering = 'Delivering', // 배송중
-  Completed = 'Completed', // 주문완료
-  Cancelled = 'Cancelled', // 주문취소
+  Pending = 'pending', // 주문대기
+  Confirmed = 'confirmed', // 주문확인
+  Delivering = 'delivering', // 배송중
+  Completed = 'completed', // 주문완료
+  Cancelled = 'cancelled', // 주문취소
 }

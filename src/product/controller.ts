@@ -1,5 +1,6 @@
-import { Controller, Get, Query } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { Controller, Get } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Public } from '@core/common/decorators/auth';
 import { ProductService } from './service';
 
 @ApiTags('상품')
@@ -8,19 +9,14 @@ export class ProductController {
   constructor(private readonly service: ProductService) {}
 
   @ApiOperation({ summary: '상품 전체 가져오기' })
-  @ApiParam({
-    name: 'storeId',
-    description: '매장PK',
-    type: Number,
-    required: false,
-  })
+  @Public()
   @Get()
-  products(@Query('storeId') storeId: number) {
+  products() {
     return this.service.products(
       undefined,
       undefined,
       undefined,
-      { storeId },
+      { storeId: 1 },
       { number: 'asc' },
     );
   }
